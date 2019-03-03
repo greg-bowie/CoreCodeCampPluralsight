@@ -160,7 +160,6 @@ namespace CoreCodeCamp.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
             }
             return BadRequest("Failed to delete the camp");
-
         }
     }
 }
