@@ -42,6 +42,20 @@ namespace CoreCodeCamp.Controllers
             }
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<TalkModel[]>> Get(string moniker, int id)
+        {
+            try
+            {
+                var talks = await Repository.GetTalkByMonikerAsync(moniker, id, true);
+                return Mapper.Map<TalkModel[]>(talks);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to get talks");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<TalkModel>> Post(string moniker, TalkModel model)
         {
@@ -77,6 +91,5 @@ namespace CoreCodeCamp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Failed to get talks");
             }
         }
-
     }
 }
