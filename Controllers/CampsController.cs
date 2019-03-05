@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Routing;
 namespace CoreCodeCamp.Controllers
 {
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     [ApiController]
     public class CampsController : ControllerBase
     {
@@ -40,11 +42,33 @@ namespace CoreCodeCamp.Controllers
         }
 
         [HttpGet("{moniker}")]
+        [MapToApiVersion("1.0")]
         public async Task<ActionResult<CampModel>> Get(string moniker)
         {
             try
             {
                 var result = await TheRepository.GetCampAsync(moniker);
+
+                if (result is null)
+                {
+                    return NotFound();
+                }
+
+                return Mapper.Map<CampModel>(result);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Database failed");
+            }
+        }
+
+        [HttpGet("{moniker}")]
+        [MapToApiVersion("1.1")]
+        public async Task<ActionResult<CampModel>> Get11(string moniker)
+        {
+            try
+            {
+                var result = await TheRepository.GetCampAsync(moniker, true);
 
                 if (result is null)
                 {
